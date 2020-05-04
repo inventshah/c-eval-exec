@@ -1,9 +1,10 @@
 #include "eval.h"
+#include "exec.h"
 
 #include <stdio.h>
 #include <string.h>
 
-#define NUM_CASES 7
+#define NUM_CASES 8
 
 void print_title(int n)
 {
@@ -78,15 +79,35 @@ short t7(void)
 
 	return q == 3;
 }
+short t8(void)
+{
+	char *str = "maybe";
+
+	EVAL("\"yes\";", str, char*);
+
+	return strcmp("yes", str) == 0;
+}
 
 int main(void)
 {
 	int i;
-	short(* tests[NUM_CASES])(void) = {t1, t2, t3, t4, t5, t6, t7};
+	short(* tests[NUM_CASES])(void) = {t1, t2, t3, t4, t5, t6, t7, t8};
 
+	printf("EVAL TESTS:\n");
 	for (i = 1; i <= NUM_CASES; i++)
 	{
 		print_title(i);
 		tests[i - 1]() ? success() : failed();
 	}
+
+	printf("EXEC TESTS:\n");
+	open_exec();
+	ADD_VAR(int, x);
+	add_var("int", "y");
+	add_function("int add(int a, int b)", "return a + b;");
+	add_to_scope("#include <stdio.h>");
+	printf("status: %d\n", exec("x = add(1, 2); y = add(2, 3); printf(\"%d + %d = %d\\n\", x, y, add(x, y));"));
+	close_exec();
+
+	return 0;
 }

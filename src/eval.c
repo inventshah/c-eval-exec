@@ -2,6 +2,11 @@
 
 #include "eval.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+
 static inline void check_null(void *ptr, char *msg)
 {
 	if (ptr == NULL)
@@ -43,7 +48,7 @@ void *write_eval(char *content, char*type)
 	if (copy[len - 1] == ';') copy[len - 1] = '\0';
 	kill_char = strrchr(copy, ';');
 
-	fprintf(fp, "%s foo(void){\n", type);
+	fprintf(fp, "%s _eval(void){\n", type);
 	if (kill_char != NULL)
 	{
 		kill_char[0] = '\0';
